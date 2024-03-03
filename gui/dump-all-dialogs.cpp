@@ -70,16 +70,23 @@ void handleSimpleDialog(GUI::Dialog &dialog, const Common::String &filename,Grap
 	dialog.close();
 }
 
-void dumpDialogs(const Common::String &message, const Common::String &lang) {
+void dumpLauncherDialogs(const Common::String& message, const Common::String& lang, GUI::LauncherDialog* launcherDialog,Graphics::Surface surf) {
+	GlobalOptionsDialog globalOptionsDialog(launcherDialog);
+	globalOptionsDialog.runModal();
+
+	for (int tabNo = 0; tabNo < 11; tabNo++) {
+		globalOptionsDialog.incrementTab(tabNo);
+		Common::String suffix = Common::String::format("-%dx%d-%d-%s.png", g_system->getOverlayWidth(), g_system->getOverlayHeight(), tabNo, lang.c_str());
+		handleSimpleDialog(globalOptionsDialog, "GlobalOptionsDialog" + suffix, surf);
+	}
+}
+
+void dumpDialogs(const Common::String &message, const Common::String &lang, Graphics::Surface surf) {
+	Common::String suffix = Common::String::format("-%dx%d-%s.png", g_system->getOverlayWidth(), g_system->getOverlayHeight(), lang.c_str());
 #ifdef USE_TRANSLATION
 	// Update GUI language
 	TransMan.setLanguage(lang);
 #endif
-
-	Graphics::Surface surf;
-	surf.create(g_system->getOverlayWidth(), g_system->getOverlayHeight(), g_system->getOverlayFormat());
-
-	Common::String suffix = Common::String::format("-%dx%d-%s.png", g_system->getOverlayWidth(), g_system->getOverlayHeight(), lang.c_str());
 
 	// Skipping Tooltips as not required
 
@@ -141,10 +148,11 @@ void dumpDialogs(const Common::String &message, const Common::String &lang) {
 #endif
 }
 
-void dumpAllDialogs(const Common::String &message) {
+void dumpAllDialogs(LauncherDialog *launcherDialog, const Common::String &message) {
 #ifdef USE_TRANSLATION
 	auto originalLang = TransMan.getCurrentLanguage();
 #endif
+	Graphics::Surface surf;
 	int original_window_width = ConfMan.getInt("last_window_width", Common::ConfigManager::kApplicationDomain);
 	int original_window_height = ConfMan.getInt("last_window_height", Common::ConfigManager::kApplicationDomain);
 	Common::List<Common::String> list = Common::getLanguageList();
@@ -176,8 +184,9 @@ void dumpAllDialogs(const Common::String &message) {
 
 		// Iterate through all langauges
 		for (Common::String &lang : list) {
-
-			dumpDialogs(message, lang);
+			surf.create(g_system->getOverlayWidth(), g_system->getOverlayHeight(), g_system->getOverlayFormat());
+			dumpLauncherDialogs(message, lang, launcherDialog, surf);
+			dumpDialogs(message, lang,surf);
 		}
 
 	}

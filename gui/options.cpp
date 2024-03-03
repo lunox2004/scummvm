@@ -2653,6 +2653,14 @@ void GlobalOptionsDialog::addGUIControls(GuiObject *boss, const Common::String &
 #endif
 }
 
+void GlobalOptionsDialog::incrementTab(int tabNum) {
+	clean();
+	build();
+	reflowLayout();
+	_tabWidget->setActiveTab(tabNum);
+	setDefaultFocusedWidget();
+}
+
 void GlobalOptionsDialog::addMiscControls(GuiObject *boss, const Common::String &prefix, bool lowres) {
 	if (!lowres)
 		_autosavePeriodPopUpDesc = new StaticTextWidget(boss, prefix + "AutosavePeriodPopupDesc", _("Autosave:"));

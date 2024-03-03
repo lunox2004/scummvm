@@ -24,12 +24,14 @@
 
 #include "common/str.h"
 #include "graphics/surface.h"
+#include "gui/launcher.h"
 
 namespace GUI {
 
 void saveGUISnapshot(Graphics::Surface surf, const Common::String &filename);
-void dumpDialogs(const Common::String &message, int resolution, const Common::String &lang);
-void dumpAllDialogs(const Common::String &message = "test");
+void dumpDialogs(const Common::String &message, const Common::String &lang, Graphics::Surface surf);
+void dumpAllDialogs(LauncherDialog *launcherDialog, const Common::String &message = "test");
+void dumpLauncherDialogs(const Common::String &message, const Common::String &lang, GUI::LauncherDialog *launcherDialog, Graphics::Surface surf);
 
 } // End of namespace GUI
 

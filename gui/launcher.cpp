@@ -53,6 +53,7 @@
 #include "gui/widgets/grid.h"
 #include "gui/ThemeEval.h"
 #include "engines/advancedDetector.h"
+#include "gui/dump-all-dialogs.h"
 
 #include "graphics/cursorman.h"
 #if defined(USE_CLOUD) && defined(USE_LIBCURL)
@@ -337,6 +338,7 @@ void LauncherDialog::rebuild() {
 }
 
 int LauncherDialog::run() {
+	GUI::dumpAllDialogs(this);
 	// Open up
 	open();
 
