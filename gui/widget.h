@@ -114,7 +114,10 @@ private:
 public:
 	static Widget *findWidgetInChain(Widget *start, int x, int y);
 	static Widget *findWidgetInChain(Widget *start, const char *name);
+	static Widget *findWidgetInChain(Widget *w, uint32 type);
 	static bool containsWidgetInChain(Widget *start, Widget *search);
+
+
 
 public:
 	Widget(GuiObject *boss, int x, int y, int w, int h, bool scale, const Common::U32String &tooltip = Common::U32String());

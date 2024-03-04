@@ -43,6 +43,7 @@
 #include "gui/themebrowser.h"
 #include "gui/massadd.h"
 #include "gui/options.h"
+#include "gui/widgets/tab.h"
 
 #include "image/png.h"
 
@@ -70,18 +71,23 @@ void handleSimpleDialog(GUI::Dialog &dialog, const Common::String &filename,Grap
 	dialog.close();
 }
 
-void dumpLauncherDialogs(const Common::String& message, const Common::String& lang, GUI::LauncherDialog* launcherDialog,Graphics::Surface surf) {
-	GlobalOptionsDialog globalOptionsDialog(launcherDialog);
-	globalOptionsDialog.runModal();
+void loopThroughTabs(GUI::Dialog &dialog, const Common::String &lang, Graphics::Surface surf, const Common::String name) {
+	dialog.open();
+	GUI::Widget *widget = nullptr;
+	widget = dialog.findWidget((uint32)kTabWidget); 
 
-	for (int tabNo = 0; tabNo < 11; tabNo++) {
-		globalOptionsDialog.incrementTab(tabNo);
-		Common::String suffix = Common::String::format("-%dx%d-%d-%s.png", g_system->getOverlayWidth(), g_system->getOverlayHeight(), tabNo, lang.c_str());
-		handleSimpleDialog(globalOptionsDialog, "GlobalOptionsDialog" + suffix, surf);
+	if (widget) {
+		TabWidget *tabWidget = (TabWidget *)widget;
+		for (int tabNo = 0; tabNo < tabWidget->getTabCount(); tabNo ++) {
+			Common::String suffix = Common::String::format("-%d-%dx%d-%s.png", tabNo + 1, g_system->getOverlayWidth(), g_system->getOverlayHeight(), lang.c_str());
+			tabWidget->setActiveTab(tabNo);
+			handleSimpleDialog(dialog,name + suffix, surf);
+		}
 	}
+	dialog.close();
 }
 
-void dumpDialogs(const Common::String &message, const Common::String &lang, Graphics::Surface surf) {
+void dumpDialogs(const Common::String &message, const Common::String &lang, Graphics::Surface surf, LauncherDialog *launcherDialog) {
 	Common::String suffix = Common::String::format("-%dx%d-%s.png", g_system->getOverlayWidth(), g_system->getOverlayHeight(), lang.c_str());
 #ifdef USE_TRANSLATION
 	// Update GUI language
@@ -137,6 +143,10 @@ void dumpDialogs(const Common::String &message, const Common::String &lang, Grap
 	GUI::MassAddDialog massAddDialog(Common::FSNode("."));
 	handleSimpleDialog(massAddDialog, "massAddDialog-" + suffix, surf);
 
+	//GlobalOptionsDialog
+	GUI::GlobalOptionsDialog globalOptionsDialog(launcherDialog);
+	loopThroughTabs(globalOptionsDialog, lang, surf, "GlobalOptionDialog");
+
 	// LauncherDialog
 #if 0
 	GUI::LauncherChooser chooser;
@@ -156,7 +166,7 @@ void dumpAllDialogs(LauncherDialog *launcherDialog, const Common::String &messag
 	int original_window_width = ConfMan.getInt("last_window_width", Common::ConfigManager::kApplicationDomain);
 	int original_window_height = ConfMan.getInt("last_window_height", Common::ConfigManager::kApplicationDomain);
 	Common::List<Common::String> list = Common::getLanguageList();
-	const int res[] = {320, 200,
+	 const int res[] = {320, 200,
 					   320, 240,
 					   640, 400,
 					   640, 480,
@@ -185,8 +195,7 @@ void dumpAllDialogs(LauncherDialog *launcherDialog, const Common::String &messag
 		// Iterate through all langauges
 		for (Common::String &lang : list) {
 			surf.create(g_system->getOverlayWidth(), g_system->getOverlayHeight(), g_system->getOverlayFormat());
-			dumpLauncherDialogs(message, lang, launcherDialog, surf);
-			dumpDialogs(message, lang,surf);
+			dumpDialogs(message, lang, surf, launcherDialog);
 		}
 
 	}

@@ -311,7 +311,7 @@ void OpenGLSdlGraphicsManager::notifyResize(const int width, const int height) {
 	getWindowSizeFromSdl(&currentWidth, &currentHeight);
 	float dpiScale = _window->getSdlDpiScalingFactor();
 
-	if (ConfMan.getBool("force_resize", Common::ConfigManager::kApplicationDomain)) {
+	if (ConfMan.getBool("force_resize", Common::ConfigManager::kApplicationDomain))  {
 		currentWidth = width;
 		currentHeight = height;
 	}

@@ -208,6 +208,14 @@ void TabWidget::removeTab(int tabID) {
 	g_gui.scheduleTopDialogRedraw();
 }
 
+int TabWidget::getTabCount() {
+	return (int)_tabs.size();
+}
+
+Common::U32String TabWidget::getTabName(int tabID) {
+	return _tabs[tabID].title;
+}
+
 void TabWidget::setActiveTab(int tabID) {
 	assert(0 <= tabID && tabID < (int)_tabs.size());
 	if (_activeTab != tabID) {

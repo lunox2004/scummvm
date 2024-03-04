@@ -104,6 +104,8 @@ public:
 	 * Widgets are always added to the active tab.
 	 */
 	void setActiveTab(int tabID);
+	int getTabCount();
+	Common::U32String getTabName(int tabId);
 
 	void setTabTitle(int tabID, const Common::U32String &title) {
 		assert(0 <= tabID && tabID < (int)_tabs.size());
